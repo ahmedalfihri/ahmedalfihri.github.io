@@ -1,105 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - Content Management</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel - Content Management</title>
 
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background:#f5f5f5; padding:20px; }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f5f5f5;
-            padding: 20px;
-        }
+/* 🔐 LOGIN */
+#loginScreen { max-width:400px; margin:120px auto; background:white; padding:2rem; border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,0.1); text-align:center; }
+#loginScreen input { width:100%; padding:0.8rem; margin:1rem 0; font-size:1rem; }
+#loginScreen button { padding:0.8rem 2rem; font-size:1rem; cursor:pointer; }
 
-        /* 🔐 LOGIN */
-        #loginScreen {
-            max-width: 400px;
-            margin: 120px auto;
-            background: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            text-align: center;
-        }
+.container { max-width:1200px; margin:0 auto; background:white; border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,0.1); overflow:hidden; }
+.header { background:linear-gradient(135deg, #667eea, #764ba2); color:white; padding:2rem; display:flex; justify-content:space-between; align-items:center; }
+.save-btn { background:white; color:#667eea; border:none; padding:0.8rem 2rem; border-radius:5px; font-weight:bold; cursor:pointer; }
 
-        #loginScreen input {
-            width: 100%;
-            padding: 0.8rem;
-            margin: 1rem 0;
-            font-size: 1rem;
-        }
+.tabs { display:flex; background:#f8f9fa; }
+.tab { padding:1rem 2rem; cursor:pointer; border:none; background:none; }
+.tab.active { background:white; border-bottom:3px solid #667eea; font-weight:bold; }
 
-        #loginScreen button {
-            padding: 0.8rem 2rem;
-            font-size: 1rem;
-            cursor: pointer;
-        }
+.content { padding:2rem; }
+.tab-content { display:none; }
+.tab-content.active { display:block; }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
+.form-group { margin-bottom:1.5rem; }
+label { display:block; margin-bottom:0.5rem; font-weight:bold; }
 
-        .header {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+input, textarea { width:100%; padding:0.8rem; border:1px solid #ddd; border-radius:5px; }
 
-        .save-btn {
-            background: white;
-            color: #667eea;
-            border: none;
-            padding: 0.8rem 2rem;
-            border-radius: 5px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+.section-title { font-size:1.5rem; color:#667eea; margin-bottom:1rem; }
 
-        .tabs { display: flex; background: #f8f9fa; }
-        .tab { padding: 1rem 2rem; cursor: pointer; border: none; background: none; }
-        .tab.active { background: white; border-bottom: 3px solid #667eea; font-weight: bold; }
+.alert { display:none; padding:1rem; background:#d4edda; margin:1rem 0; border-radius:5px; }
+.alert.active { display:block; }
 
-        .content { padding: 2rem; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-
-        .form-group { margin-bottom: 1.5rem; }
-        label { display: block; margin-bottom: 0.5rem; font-weight: bold; }
-
-        input, textarea {
-            width: 100%;
-            padding: 0.8rem;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-
-        .section-title {
-            font-size: 1.5rem;
-            color: #667eea;
-            margin-bottom: 1rem;
-        }
-
-        .alert {
-            display: none;
-            padding: 1rem;
-            background: #d4edda;
-            margin: 1rem;
-            border-radius: 5px;
-        }
-
-        .alert.active { display: block; }
-    </style>
+.card { background:#f8f9fa; padding:1rem; border-radius:8px; margin-bottom:1rem; box-shadow:0 1px 3px rgba(0,0,0,0.1); }
+.card input { margin-bottom:0.5rem; }
+.card button { background:#ff4d4f; color:white; border:none; padding:0.3rem 0.8rem; border-radius:5px; cursor:pointer; }
+</style>
 </head>
 
 <body>
@@ -112,9 +52,8 @@
     <p id="loginError" style="color:red;"></p>
 </div>
 
-<!-- 🛠 ADMIN PANEL (YOUR ORIGINAL CONTENT) -->
+<!-- 🛠 ADMIN PANEL -->
 <div id="adminPanel" style="display:none;">
-
     <div class="container">
         <div class="header">
             <h1>📝 Website Admin Panel</h1>
@@ -132,6 +71,7 @@
         </div>
 
         <div class="content">
+            <!-- PROFILE -->
             <div id="profile" class="tab-content active">
                 <h2 class="section-title">Profile</h2>
                 <input id="profileName" placeholder="Name">
@@ -139,59 +79,112 @@
                 <textarea id="profileAbout" placeholder="About"></textarea>
             </div>
 
-            <div id="experience" class="tab-content"><p>Experience section</p></div>
-            <div id="education" class="tab-content"><p>Education section</p></div>
-            <div id="skills" class="tab-content"><textarea id="skillsInput"></textarea></div>
+            <!-- EXPERIENCE -->
+            <div id="experience" class="tab-content">
+                <h2 class="section-title">Experience</h2>
+                <div id="experienceList"></div>
+                <button onclick="addExperience()">➕ Add Experience</button>
+            </div>
+
+            <!-- EDUCATION -->
+            <div id="education" class="tab-content">
+                <h2 class="section-title">Education</h2>
+                <div id="educationList"></div>
+                <button onclick="addEducation()">➕ Add Education</button>
+            </div>
+
+            <!-- SKILLS -->
+            <div id="skills" class="tab-content">
+                <textarea id="skillsInput" placeholder="Add skills separated by commas"></textarea>
+            </div>
+
+            <!-- CONTACT -->
             <div id="contact" class="tab-content">
                 <input id="contactEmail" placeholder="Email">
                 <input id="contactGithub" placeholder="GitHub">
             </div>
         </div>
     </div>
-
 </div>
 
 <script>
-/* 🔐 LOGIN LOGIC */
-const PASSWORD = "Ahmed20012001.?"; // 👈 CHANGE THIS
-
+/* 🔐 LOGIN */
+const PASSWORD = "Ahmed20012001.?";
 function login() {
     const input = document.getElementById("adminPassword").value;
-    if (input === PASSWORD) {
+    if(input === PASSWORD) {
         sessionStorage.setItem("adminLoggedIn", "true");
         showAdmin();
     } else {
         document.getElementById("loginError").innerText = "Wrong password";
     }
 }
-
 function showAdmin() {
     document.getElementById("loginScreen").style.display = "none";
     document.getElementById("adminPanel").style.display = "block";
 }
+if(sessionStorage.getItem("adminLoggedIn") === "true") showAdmin();
 
-if (sessionStorage.getItem("adminLoggedIn") === "true") {
-    showAdmin();
+/* 🛠 DATA */
+let data = JSON.parse(localStorage.getItem("websiteData")) || {profile:{}, skills:[], contact:{}, experience:[], education:[]};
+
+/* RENDER EXPERIENCE */
+function renderExperience() {
+    const container = document.getElementById("experienceList");
+    container.innerHTML = "";
+    data.experience.forEach((exp, idx)=>{
+        const div = document.createElement("div");
+        div.classList.add("card");
+        div.innerHTML = `
+            <input placeholder="Position" value="${exp.position}" onchange="data.experience[${idx}].position=this.value">
+            <input placeholder="Company" value="${exp.company}" onchange="data.experience[${idx}].company=this.value">
+            <input placeholder="Years" value="${exp.years}" onchange="data.experience[${idx}].years=this.value">
+            <button onclick="removeExperience(${idx})">🗑 Remove</button>
+        `;
+        container.appendChild(div);
+    });
 }
+function addExperience(){ data.experience.push({position:"", company:"", years:""}); renderExperience(); }
+function removeExperience(idx){ data.experience.splice(idx,1); renderExperience(); }
 
-/* 🛠 YOUR ORIGINAL JS (SHORTENED FOR DEMO) */
-let data = JSON.parse(localStorage.getItem("websiteData")) || {
-    profile:{}, skills:[], contact:{}
-};
+/* RENDER EDUCATION */
+function renderEducation() {
+    const container = document.getElementById("educationList");
+    container.innerHTML = "";
+    data.education.forEach((edu, idx)=>{
+        const div = document.createElement("div");
+        div.classList.add("card");
+        div.innerHTML = `
+            <input placeholder="Degree / Program" value="${edu.degree}" onchange="data.education[${idx}].degree=this.value">
+            <input placeholder="School / University" value="${edu.school}" onchange="data.education[${idx}].school=this.value">
+            <input placeholder="Years" value="${edu.years}" onchange="data.education[${idx}].years=this.value">
+            <button onclick="removeEducation(${idx})">🗑 Remove</button>
+        `;
+        container.appendChild(div);
+    });
+}
+function addEducation(){ data.education.push({degree:"", school:"", years:""}); renderEducation(); }
+function removeEducation(idx){ data.education.splice(idx,1); renderEducation(); }
 
+/* RENDER ON PAGE LOAD */
+renderExperience();
+renderEducation();
+
+/* SAVE ALL DATA */
 function saveAllData(){
-    data.profile.name = profileName.value;
-    data.profile.profession = profileProfession.value;
-    data.profile.about = profileAbout.value;
-    data.skills = skillsInput.value.split(",");
-    data.contact.email = contactEmail.value;
-    data.contact.github = contactGithub.value;
+    data.profile.name = document.getElementById("profileName").value;
+    data.profile.profession = document.getElementById("profileProfession").value;
+    data.profile.about = document.getElementById("profileAbout").value;
+    data.skills = document.getElementById("skillsInput").value.split(",");
+    data.contact.email = document.getElementById("contactEmail").value;
+    data.contact.github = document.getElementById("contactGithub").value;
 
     localStorage.setItem("websiteData", JSON.stringify(data));
-    saveAlert.classList.add("active");
-    setTimeout(()=>saveAlert.classList.remove("active"),2000);
+    document.getElementById("saveAlert").classList.add("active");
+    setTimeout(()=>document.getElementById("saveAlert").classList.remove("active"),2000);
 }
 
+/* TAB SWITCH */
 function switchTab(id,e){
     document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
     document.querySelectorAll(".tab-content").forEach(c=>c.classList.remove("active"));
@@ -199,6 +192,5 @@ function switchTab(id,e){
     document.getElementById(id).classList.add("active");
 }
 </script>
-
 </body>
 </html>
