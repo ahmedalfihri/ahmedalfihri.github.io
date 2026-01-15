@@ -1,11 +1,406 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Welcome</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Name - Portfolio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        section {
+            padding: 4rem 0;
+            min-height: 400px;
+        }
+
+        section:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: #667eea;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #555;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 6rem 0;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: #666;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: transform 0.3s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .cv-section {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .cv-item {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .cv-item h4 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .cv-item .date {
+            color: #999;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .skill-tag {
+            background: #e9ecef;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .book-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+        }
+
+        .book-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .book-card h4 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .book-card .author {
+            color: #999;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .blog-posts {
+            display: grid;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .blog-post {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .blog-post h3 {
+            color: #667eea;
+        }
+
+        .blog-post .meta {
+            color: #999;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .contact-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .contact-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        .contact-card h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                gap: 1rem;
+                font-size: 0.9rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            .books-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-  <h1>Hello from GitHub Pages!</h1>
-  <p>Your website is now live 🎉</p>
+    <header>
+        <nav>
+            <div class="logo">Your Name</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#cv">CV</a></li>
+                <li><a href="#books">Books</a></li>
+                <li><a href="#blog">Blog</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="home" class="hero">
+        <div class="container">
+            <h1>Welcome to My Portfolio</h1>
+            <p>I'm a [Your Profession] passionate about [Your Interests]</p>
+            <a href="#contact" class="btn">Get in Touch</a>
+        </div>
+    </section>
+
+    <section id="cv">
+        <div class="container">
+            <h2>Curriculum Vitae</h2>
+            
+            <div class="cv-section">
+                <div class="cv-item">
+                    <h3>Experience</h3>
+                    <div style="margin-top: 1.5rem;">
+                        <h4>Job Title</h4>
+                        <div class="date">Company Name | 2020 - Present</div>
+                        <p>Description of your role and achievements. Highlight key responsibilities and impact you made.</p>
+                    </div>
+                    <div style="margin-top: 1.5rem;">
+                        <h4>Previous Job Title</h4>
+                        <div class="date">Previous Company | 2018 - 2020</div>
+                        <p>Description of your previous role and what you accomplished.</p>
+                    </div>
+                </div>
+
+                <div class="cv-item">
+                    <h3>Education</h3>
+                    <div style="margin-top: 1.5rem;">
+                        <h4>Degree Name</h4>
+                        <div class="date">University Name | 2014 - 2018</div>
+                        <p>Major: Your Major. Relevant coursework and achievements.</p>
+                    </div>
+                </div>
+
+                <div class="cv-item">
+                    <h3>Skills</h3>
+                    <div class="skills">
+                        <span class="skill-tag">Skill 1</span>
+                        <span class="skill-tag">Skill 2</span>
+                        <span class="skill-tag">Skill 3</span>
+                        <span class="skill-tag">Skill 4</span>
+                        <span class="skill-tag">Skill 5</span>
+                        <span class="skill-tag">Skill 6</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="books">
+        <div class="container">
+            <h2>Favorite Books</h2>
+            <p>Here are some books that have influenced my thinking and I highly recommend:</p>
+            
+            <div class="books-grid">
+                <div class="book-card">
+                    <h4>Book Title 1</h4>
+                    <div class="author">by Author Name</div>
+                    <p>A brief description of why this book is meaningful to you and what you learned from it.</p>
+                </div>
+
+                <div class="book-card">
+                    <h4>Book Title 2</h4>
+                    <div class="author">by Author Name</div>
+                    <p>What makes this book special and how it influenced your perspective.</p>
+                </div>
+
+                <div class="book-card">
+                    <h4>Book Title 3</h4>
+                    <div class="author">by Author Name</div>
+                    <p>Key takeaways and why you recommend this to others.</p>
+                </div>
+
+                <div class="book-card">
+                    <h4>Book Title 4</h4>
+                    <div class="author">by Author Name</div>
+                    <p>Your thoughts and impressions about this book.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="blog">
+        <div class="container">
+            <h2>Blog Posts</h2>
+            
+            <div class="blog-posts">
+                <article class="blog-post">
+                    <h3>Your First Blog Post Title</h3>
+                    <div class="meta">Published on January 15, 2026</div>
+                    <p>This is a preview of your blog post. Write engaging content about topics you're passionate about. Share your insights, experiences, and knowledge with your readers...</p>
+                    <a href="#" class="btn" style="margin-top: 1rem;">Read More</a>
+                </article>
+
+                <article class="blog-post">
+                    <h3>Another Interesting Post</h3>
+                    <div class="meta">Published on January 10, 2026</div>
+                    <p>Another compelling blog post preview that captures readers' attention and encourages them to click through to read the full article...</p>
+                    <a href="#" class="btn" style="margin-top: 1rem;">Read More</a>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact">
+        <div class="container">
+            <h2>Get in Touch</h2>
+            <p>Feel free to reach out to me through any of these channels:</p>
+            
+            <div class="contact-info">
+                <div class="contact-card">
+                    <h3>Email</h3>
+                    <p>your.email@example.com</p>
+                </div>
+                <div class="contact-card">
+                    <h3>LinkedIn</h3>
+                    <p>linkedin.com/in/yourprofile</p>
+                </div>
+                <div class="contact-card">
+                    <h3>GitHub</h3>
+                    <p>github.com/yourusername</p>
+                </div>
+                <div class="contact-card">
+                    <h3>Twitter</h3>
+                    <p>@yourhandle</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Your Name. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>
