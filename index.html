@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Name - Portfolio</title>
+    <title>Portfolio - Dynamic Content</title>
     <style>
         * {
             margin: 0;
@@ -137,6 +137,10 @@
             margin-bottom: 1rem;
         }
 
+        .cv-entry {
+            margin-top: 1.5rem;
+        }
+
         .skills {
             display: flex;
             flex-wrap: wrap;
@@ -224,11 +228,27 @@
             margin-bottom: 1rem;
         }
 
+        .contact-card a {
+            color: #333;
+            text-decoration: none;
+        }
+
+        .contact-card a:hover {
+            color: #667eea;
+        }
+
         footer {
             background: #2c3e50;
             color: white;
             text-align: center;
             padding: 2rem 0;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #999;
+            padding: 2rem;
+            font-style: italic;
         }
 
         @media (max-width: 768px) {
@@ -254,7 +274,7 @@
 <body>
     <header>
         <nav>
-            <div class="logo">Your Name</div>
+            <div class="logo" id="siteName">Your Name</div>
             <ul class="nav-links">
                 <li><a href="#home">Home</a></li>
                 <li><a href="#cv">CV</a></li>
@@ -267,8 +287,8 @@
 
     <section id="home" class="hero">
         <div class="container">
-            <h1>Welcome to My Portfolio</h1>
-            <p>I'm a [Your Profession] passionate about [Your Interests]</p>
+            <h1 id="heroName">Welcome to My Portfolio</h1>
+            <p id="heroProfession">Loading...</p>
             <a href="#contact" class="btn">Get in Touch</a>
         </div>
     </section>
@@ -280,37 +300,17 @@
             <div class="cv-section">
                 <div class="cv-item">
                     <h3>Experience</h3>
-                    <div style="margin-top: 1.5rem;">
-                        <h4>Job Title</h4>
-                        <div class="date">Company Name | 2020 - Present</div>
-                        <p>Description of your role and achievements. Highlight key responsibilities and impact you made.</p>
-                    </div>
-                    <div style="margin-top: 1.5rem;">
-                        <h4>Previous Job Title</h4>
-                        <div class="date">Previous Company | 2018 - 2020</div>
-                        <p>Description of your previous role and what you accomplished.</p>
-                    </div>
+                    <div id="experienceContent"></div>
                 </div>
 
                 <div class="cv-item">
                     <h3>Education</h3>
-                    <div style="margin-top: 1.5rem;">
-                        <h4>Degree Name</h4>
-                        <div class="date">University Name | 2014 - 2018</div>
-                        <p>Major: Your Major. Relevant coursework and achievements.</p>
-                    </div>
+                    <div id="educationContent"></div>
                 </div>
 
                 <div class="cv-item">
                     <h3>Skills</h3>
-                    <div class="skills">
-                        <span class="skill-tag">Skill 1</span>
-                        <span class="skill-tag">Skill 2</span>
-                        <span class="skill-tag">Skill 3</span>
-                        <span class="skill-tag">Skill 4</span>
-                        <span class="skill-tag">Skill 5</span>
-                        <span class="skill-tag">Skill 6</span>
-                    </div>
+                    <div class="skills" id="skillsContent"></div>
                 </div>
             </div>
         </div>
@@ -320,54 +320,14 @@
         <div class="container">
             <h2>Favorite Books</h2>
             <p>Here are some books that have influenced my thinking and I highly recommend:</p>
-            
-            <div class="books-grid">
-                <div class="book-card">
-                    <h4>Book Title 1</h4>
-                    <div class="author">by Author Name</div>
-                    <p>A brief description of why this book is meaningful to you and what you learned from it.</p>
-                </div>
-
-                <div class="book-card">
-                    <h4>Book Title 2</h4>
-                    <div class="author">by Author Name</div>
-                    <p>What makes this book special and how it influenced your perspective.</p>
-                </div>
-
-                <div class="book-card">
-                    <h4>Book Title 3</h4>
-                    <div class="author">by Author Name</div>
-                    <p>Key takeaways and why you recommend this to others.</p>
-                </div>
-
-                <div class="book-card">
-                    <h4>Book Title 4</h4>
-                    <div class="author">by Author Name</div>
-                    <p>Your thoughts and impressions about this book.</p>
-                </div>
-            </div>
+            <div class="books-grid" id="booksContent"></div>
         </div>
     </section>
 
     <section id="blog">
         <div class="container">
             <h2>Blog Posts</h2>
-            
-            <div class="blog-posts">
-                <article class="blog-post">
-                    <h3>Your First Blog Post Title</h3>
-                    <div class="meta">Published on January 15, 2026</div>
-                    <p>This is a preview of your blog post. Write engaging content about topics you're passionate about. Share your insights, experiences, and knowledge with your readers...</p>
-                    <a href="#" class="btn" style="margin-top: 1rem;">Read More</a>
-                </article>
-
-                <article class="blog-post">
-                    <h3>Another Interesting Post</h3>
-                    <div class="meta">Published on January 10, 2026</div>
-                    <p>Another compelling blog post preview that captures readers' attention and encourages them to click through to read the full article...</p>
-                    <a href="#" class="btn" style="margin-top: 1rem;">Read More</a>
-                </article>
-            </div>
+            <div class="blog-posts" id="blogContent"></div>
         </div>
     </section>
 
@@ -375,32 +335,162 @@
         <div class="container">
             <h2>Get in Touch</h2>
             <p>Feel free to reach out to me through any of these channels:</p>
-            
-            <div class="contact-info">
-                <div class="contact-card">
-                    <h3>Email</h3>
-                    <p>your.email@example.com</p>
-                </div>
-                <div class="contact-card">
-                    <h3>LinkedIn</h3>
-                    <p>linkedin.com/in/yourprofile</p>
-                </div>
-                <div class="contact-card">
-                    <h3>GitHub</h3>
-                    <p>github.com/yourusername</p>
-                </div>
-                <div class="contact-card">
-                    <h3>Twitter</h3>
-                    <p>@yourhandle</p>
-                </div>
-            </div>
+            <div class="contact-info" id="contactContent"></div>
         </div>
     </section>
 
     <footer>
         <div class="container">
-            <p>&copy; 2026 Your Name. All rights reserved.</p>
+            <p>&copy; 2026 <span id="footerName">Your Name</span>. All rights reserved.</p>
         </div>
     </footer>
+
+    <script>
+        function loadWebsiteData() {
+            const saved = localStorage.getItem('websiteData');
+            
+            if (!saved) {
+                loadDefaultData();
+                return;
+            }
+            
+            const data = JSON.parse(saved);
+            
+            // Update Profile
+            if (data.profile.name) {
+                document.getElementById('siteName').textContent = data.profile.name;
+                document.getElementById('heroName').textContent = `Welcome, I'm ${data.profile.name}`;
+                document.getElementById('footerName').textContent = data.profile.name;
+            }
+            
+            if (data.profile.profession) {
+                document.getElementById('heroProfession').textContent = `${data.profile.profession}${data.profile.about ? ' - ' + data.profile.about : ''}`;
+            }
+            
+            // Load Experience
+            const expContent = document.getElementById('experienceContent');
+            if (data.experience && data.experience.length > 0) {
+                expContent.innerHTML = data.experience.map(exp => `
+                    <div class="cv-entry">
+                        <h4>${exp.title}</h4>
+                        <div class="date">${exp.company} | ${exp.duration}</div>
+                        <p>${exp.description}</p>
+                    </div>
+                `).join('');
+            } else {
+                expContent.innerHTML = '<p class="empty-state">No experience added yet. Use the admin panel to add your work experience.</p>';
+            }
+            
+            // Load Education
+            const eduContent = document.getElementById('educationContent');
+            if (data.education && data.education.length > 0) {
+                eduContent.innerHTML = data.education.map(edu => `
+                    <div class="cv-entry">
+                        <h4>${edu.degree}</h4>
+                        <div class="date">${edu.institution} | ${edu.duration}</div>
+                        <p>${edu.description}</p>
+                    </div>
+                `).join('');
+            } else {
+                eduContent.innerHTML = '<p class="empty-state">No education added yet. Use the admin panel to add your education.</p>';
+            }
+            
+            // Load Skills
+            const skillsContent = document.getElementById('skillsContent');
+            if (data.skills && data.skills.length > 0) {
+                skillsContent.innerHTML = data.skills.map(skill => 
+                    `<span class="skill-tag">${skill}</span>`
+                ).join('');
+            } else {
+                skillsContent.innerHTML = '<p class="empty-state">No skills added yet.</p>';
+            }
+            
+            // Load Books
+            const booksContent = document.getElementById('booksContent');
+            if (data.books && data.books.length > 0) {
+                booksContent.innerHTML = data.books.map(book => `
+                    <div class="book-card">
+                        <h4>${book.title}</h4>
+                        <div class="author">by ${book.author}</div>
+                        <p>${book.review}</p>
+                    </div>
+                `).join('');
+            } else {
+                booksContent.innerHTML = '<p class="empty-state">No books added yet. Share your favorite books through the admin panel!</p>';
+            }
+            
+            // Load Blog Posts
+            const blogContent = document.getElementById('blogContent');
+            if (data.blog && data.blog.length > 0) {
+                blogContent.innerHTML = data.blog.map(post => `
+                    <article class="blog-post">
+                        <h3>${post.title}</h3>
+                        <div class="meta">Published on ${post.date}</div>
+                        <p>${post.content}</p>
+                    </article>
+                `).join('');
+            } else {
+                blogContent.innerHTML = '<p class="empty-state">No blog posts yet. Start writing through the admin panel!</p>';
+            }
+            
+            // Load Contact
+            const contactContent = document.getElementById('contactContent');
+            const contacts = [];
+            
+            if (data.contact.email) {
+                contacts.push(`
+                    <div class="contact-card">
+                        <h3>Email</h3>
+                        <a href="mailto:${data.contact.email}">${data.contact.email}</a>
+                    </div>
+                `);
+            }
+            
+            if (data.contact.linkedin) {
+                contacts.push(`
+                    <div class="contact-card">
+                        <h3>LinkedIn</h3>
+                        <a href="${data.contact.linkedin}" target="_blank">${data.contact.linkedin}</a>
+                    </div>
+                `);
+            }
+            
+            if (data.contact.github) {
+                contacts.push(`
+                    <div class="contact-card">
+                        <h3>GitHub</h3>
+                        <a href="${data.contact.github}" target="_blank">${data.contact.github}</a>
+                    </div>
+                `);
+            }
+            
+            if (data.contact.twitter) {
+                contacts.push(`
+                    <div class="contact-card">
+                        <h3>Twitter/X</h3>
+                        <a href="https://twitter.com/${data.contact.twitter}" target="_blank">${data.contact.twitter}</a>
+                    </div>
+                `);
+            }
+            
+            if (contacts.length > 0) {
+                contactContent.innerHTML = contacts.join('');
+            } else {
+                contactContent.innerHTML = '<p class="empty-state">No contact information added yet.</p>';
+            }
+        }
+        
+        function loadDefaultData() {
+            document.getElementById('heroProfession').textContent = 'Use the admin panel to customize your portfolio';
+            document.getElementById('experienceContent').innerHTML = '<p class="empty-state">No experience added yet. Use the admin panel to add your work experience.</p>';
+            document.getElementById('educationContent').innerHTML = '<p class="empty-state">No education added yet.</p>';
+            document.getElementById('skillsContent').innerHTML = '<p class="empty-state">No skills added yet.</p>';
+            document.getElementById('booksContent').innerHTML = '<p class="empty-state">No books added yet.</p>';
+            document.getElementById('blogContent').innerHTML = '<p class="empty-state">No blog posts yet.</p>';
+            document.getElementById('contactContent').innerHTML = '<p class="empty-state">No contact information added yet.</p>';
+        }
+        
+        window.onload = loadWebsiteData;
+    </script>
 </body>
 </html>
