@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Panel - Content Management</title>
+<title>Admin Panel - Dynamic Content Management</title>
 
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
@@ -18,18 +18,15 @@ body { font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-s
 .header { background:linear-gradient(135deg, #667eea, #764ba2); color:white; padding:2rem; display:flex; justify-content:space-between; align-items:center; }
 .save-btn { background:white; color:#667eea; border:none; padding:0.8rem 2rem; border-radius:5px; font-weight:bold; cursor:pointer; }
 
-.tabs { display:flex; background:#f8f9fa; }
-.tab { padding:1rem 2rem; cursor:pointer; border:none; background:none; }
+.tabs { display:flex; background:#f8f9fa; overflow-x:auto; }
+.tab { padding:1rem 2rem; cursor:pointer; border:none; background:none; white-space:nowrap; }
 .tab.active { background:white; border-bottom:3px solid #667eea; font-weight:bold; }
 
 .content { padding:2rem; }
 .tab-content { display:none; }
 .tab-content.active { display:block; }
 
-.form-group { margin-bottom:1.5rem; }
-label { display:block; margin-bottom:0.5rem; font-weight:bold; }
-
-input, textarea { width:100%; padding:0.8rem; border:1px solid #ddd; border-radius:5px; }
+input, textarea { width:100%; padding:0.8rem; border:1px solid #ddd; border-radius:5px; margin-bottom:0.5rem; }
 
 .section-title { font-size:1.5rem; color:#667eea; margin-bottom:1rem; }
 
@@ -37,11 +34,9 @@ input, textarea { width:100%; padding:0.8rem; border:1px solid #ddd; border-radi
 .alert.active { display:block; }
 
 .card { background:#f8f9fa; padding:1rem; border-radius:8px; margin-bottom:1rem; box-shadow:0 1px 3px rgba(0,0,0,0.1); }
-.card input { margin-bottom:0.5rem; }
 .card button { background:#ff4d4f; color:white; border:none; padding:0.3rem 0.8rem; border-radius:5px; cursor:pointer; }
 </style>
 </head>
-
 <body>
 
 <!-- 🔐 LOGIN SCREEN -->
@@ -68,6 +63,7 @@ input, textarea { width:100%; padding:0.8rem; border:1px solid #ddd; border-radi
             <button class="tab" onclick="switchTab('education', event)">Education</button>
             <button class="tab" onclick="switchTab('skills', event)">Skills</button>
             <button class="tab" onclick="switchTab('contact', event)">Contact</button>
+            <button class="tab" onclick="switchTab('blogs', event)">Blogs</button>
         </div>
 
         <div class="content">
@@ -102,6 +98,15 @@ input, textarea { width:100%; padding:0.8rem; border:1px solid #ddd; border-radi
             <div id="contact" class="tab-content">
                 <input id="contactEmail" placeholder="Email">
                 <input id="contactGithub" placeholder="GitHub">
+                <input id="contactLinkedin" placeholder="LinkedIn URL">
+                <input id="contactTwitter" placeholder="Twitter/X">
+            </div>
+
+            <!-- BLOGS -->
+            <div id="blogs" class="tab-content">
+                <h2 class="section-title">Blogs</h2>
+                <div id="blogsList"></div>
+                <button onclick="addBlog()">➕ Add Blog</button>
             </div>
         </div>
     </div>
@@ -125,59 +130,90 @@ function showAdmin() {
 }
 if(sessionStorage.getItem("adminLoggedIn") === "true") showAdmin();
 
-/* 🛠 DATA */
-let data = JSON.parse(localStorage.getItem("websiteData")) || {profile:{}, skills:[], contact:{}, experience:[], education:[]};
+/* 🛠 DATA INIT */
+let data = JSON.parse(localStorage.getItem("websiteData")) || {};
+data.profile = data.profile || {};
+data.skills = data.skills || [];
+data.contact = data.contact || {};
+data.experience = data.experience || [];
+data.education = data.education || [];
+data.blogs = data.blogs || [];
 
-/* RENDER EXPERIENCE */
+/* RENDER FUNCTIONS */
+// EXPERIENCE
 function renderExperience() {
     const container = document.getElementById("experienceList");
     container.innerHTML = "";
-    data.experience.forEach((exp, idx)=>{
+    data.experience.forEach((exp, idx) => {
         const div = document.createElement("div");
         div.classList.add("card");
         div.innerHTML = `
             <input placeholder="Position" value="${exp.position}" onchange="data.experience[${idx}].position=this.value">
             <input placeholder="Company" value="${exp.company}" onchange="data.experience[${idx}].company=this.value">
             <input placeholder="Years" value="${exp.years}" onchange="data.experience[${idx}].years=this.value">
+            <textarea placeholder="Description" onchange="data.experience[${idx}].description=this.value">${exp.description || ''}</textarea>
             <button onclick="removeExperience(${idx})">🗑 Remove</button>
         `;
         container.appendChild(div);
     });
 }
-function addExperience(){ data.experience.push({position:"", company:"", years:""}); renderExperience(); }
+function addExperience(){ data.experience.push({position:"", company:"", years:"", description:""}); renderExperience(); }
 function removeExperience(idx){ data.experience.splice(idx,1); renderExperience(); }
 
-/* RENDER EDUCATION */
+// EDUCATION
 function renderEducation() {
     const container = document.getElementById("educationList");
     container.innerHTML = "";
-    data.education.forEach((edu, idx)=>{
+    data.education.forEach((edu, idx) => {
         const div = document.createElement("div");
         div.classList.add("card");
         div.innerHTML = `
             <input placeholder="Degree / Program" value="${edu.degree}" onchange="data.education[${idx}].degree=this.value">
             <input placeholder="School / University" value="${edu.school}" onchange="data.education[${idx}].school=this.value">
             <input placeholder="Years" value="${edu.years}" onchange="data.education[${idx}].years=this.value">
+            <textarea placeholder="Description" onchange="data.education[${idx}].description=this.value">${edu.description || ''}</textarea>
             <button onclick="removeEducation(${idx})">🗑 Remove</button>
         `;
         container.appendChild(div);
     });
 }
-function addEducation(){ data.education.push({degree:"", school:"", years:""}); renderEducation(); }
+function addEducation(){ data.education.push({degree:"", school:"", years:"", description:""}); renderEducation(); }
 function removeEducation(idx){ data.education.splice(idx,1); renderEducation(); }
 
-/* RENDER ON PAGE LOAD */
+// BLOGS
+function renderBlogs() {
+    const container = document.getElementById("blogsList");
+    container.innerHTML = "";
+    data.blogs.forEach((blog, idx) => {
+        const div = document.createElement("div");
+        div.classList.add("card");
+        div.innerHTML = `
+            <input placeholder="Title" value="${blog.title}" onchange="data.blogs[${idx}].title=this.value">
+            <input placeholder="Date (YYYY-MM-DD)" value="${blog.date}" onchange="data.blogs[${idx}].date=this.value">
+            <textarea placeholder="Content" onchange="data.blogs[${idx}].content=this.value">${blog.content || ''}</textarea>
+            <button onclick="removeBlog(${idx})">🗑 Remove</button>
+        `;
+        container.appendChild(div);
+    });
+}
+function addBlog() { data.blogs.push({title:"", date:"", content:""}); renderBlogs(); }
+function removeBlog(idx) { data.blogs.splice(idx,1); renderBlogs(); }
+
+// INITIAL RENDER
 renderExperience();
 renderEducation();
+renderBlogs();
 
-/* SAVE ALL DATA */
+/* SAVE DATA */
 function saveAllData(){
     data.profile.name = document.getElementById("profileName").value;
     data.profile.profession = document.getElementById("profileProfession").value;
     data.profile.about = document.getElementById("profileAbout").value;
-    data.skills = document.getElementById("skillsInput").value.split(",");
+    data.skills = document.getElementById("skillsInput").value.split(",").map(s => s.trim()).filter(s => s);
     data.contact.email = document.getElementById("contactEmail").value;
     data.contact.github = document.getElementById("contactGithub").value;
+    data.contact.linkedin = document.getElementById("contactLinkedin").value;
+    data.contact.twitter = document.getElementById("contactTwitter").value;
 
     localStorage.setItem("websiteData", JSON.stringify(data));
     document.getElementById("saveAlert").classList.add("active");
