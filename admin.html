@@ -1,232 +1,578 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Panel - Dynamic Content Management</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin Panel - Content Management</title>
 
 <style>
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background:#f5f5f5; padding:20px; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background:#f5f5f5;
+    padding:20px;
+    color:#222;
+  }
 
-/* 🔐 LOGIN */
-#loginScreen { max-width:400px; margin:120px auto; background:white; padding:2rem; border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,0.1); text-align:center; }
-#loginScreen input { width:100%; padding:0.8rem; margin:1rem 0; font-size:1rem; }
-#loginScreen button { padding:0.8rem 2rem; font-size:1rem; cursor:pointer; }
+  /* 🔐 LOCK SCREEN (cosmetic; real protection is token required to publish) */
+  #lockScreen {
+    max-width:520px;
+    margin:110px auto;
+    background:white;
+    padding:2rem;
+    border-radius:14px;
+    box-shadow:0 2px 10px rgba(0,0,0,0.10);
+  }
+  #lockScreen h2 { margin-bottom:0.5rem; }
+  #lockScreen p { color:#666; margin-bottom:1rem; }
+  #lockScreen input { width:100%; padding:0.85rem; font-size:1rem; border:1px solid #ddd; border-radius:10px; }
+  #lockScreen button { margin-top:1rem; padding:0.85rem 1.4rem; border-radius:10px; border:none; cursor:pointer; font-weight:700; }
+  .primaryBtn { background:linear-gradient(135deg, #667eea, #764ba2); color:white; }
+  .hint { font-size:0.9rem; color:#888; margin-top:0.75rem; }
 
-.container { max-width:1200px; margin:0 auto; background:white; border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,0.1); overflow:hidden; }
-.header { background:linear-gradient(135deg, #667eea, #764ba2); color:white; padding:2rem; display:flex; justify-content:space-between; align-items:center; }
-.save-btn { background:white; color:#667eea; border:none; padding:0.8rem 2rem; border-radius:5px; font-weight:bold; cursor:pointer; }
+  .container {
+    max-width:1200px;
+    margin:0 auto;
+    background:white;
+    border-radius:14px;
+    box-shadow:0 2px 10px rgba(0,0,0,0.10);
+    overflow:hidden;
+    display:none;
+  }
 
-.tabs { display:flex; background:#f8f9fa; overflow-x:auto; }
-.tab { padding:1rem 2rem; cursor:pointer; border:none; background:none; white-space:nowrap; }
-.tab.active { background:white; border-bottom:3px solid #667eea; font-weight:bold; }
+  .header {
+    background:linear-gradient(135deg, #667eea, #764ba2);
+    color:white;
+    padding:1.6rem 2rem;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:1rem;
+    flex-wrap: wrap;
+  }
 
-.content { padding:2rem; }
-.tab-content { display:none; }
-.tab-content.active { display:block; }
+  .header h1 { font-size:1.4rem; }
+  .save-btn {
+    background:white;
+    color:#667eea;
+    border:none;
+    padding:0.8rem 1.2rem;
+    border-radius:10px;
+    font-weight:800;
+    cursor:pointer;
+  }
 
-input, textarea { width:100%; padding:0.8rem; border:1px solid #ddd; border-radius:5px; margin-bottom:0.5rem; }
+  .tabs {
+    display:flex;
+    background:#f8f9fa;
+    overflow-x:auto;
+    border-bottom:1px solid #eee;
+  }
+  .tab {
+    padding:1rem 1.3rem;
+    cursor:pointer;
+    border:none;
+    background:none;
+    white-space:nowrap;
+  }
+  .tab.active {
+    background:white;
+    border-bottom:3px solid #667eea;
+    font-weight:800;
+  }
 
-.section-title { font-size:1.5rem; color:#667eea; margin-bottom:1rem; }
+  .content { padding:2rem; }
+  .tab-content { display:none; }
+  .tab-content.active { display:block; }
 
-.alert { display:none; padding:1rem; background:#d4edda; margin:1rem 0; border-radius:5px; }
-.alert.active { display:block; }
+  input, textarea {
+    width:100%;
+    padding:0.85rem;
+    border:1px solid #ddd;
+    border-radius:10px;
+    margin-bottom:0.6rem;
+    font-size: 1rem;
+  }
+  textarea { min-height: 110px; resize: vertical; }
 
-.card { background:#f8f9fa; padding:1rem; border-radius:8px; margin-bottom:1rem; box-shadow:0 1px 3px rgba(0,0,0,0.1); }
-.card button { background:#ff4d4f; color:white; border:none; padding:0.3rem 0.8rem; border-radius:5px; cursor:pointer; }
+  .section-title { font-size:1.35rem; color:#667eea; margin-bottom:1rem; }
+
+  .alert {
+    display:none;
+    padding:0.9rem 1rem;
+    background:#d4edda;
+    margin: 0;
+    border-radius:0;
+    color:#155724;
+  }
+  .alert.active { display:block; }
+
+  .card {
+    background:#f8f9fa;
+    padding:1rem;
+    border-radius:12px;
+    margin-bottom:1rem;
+    box-shadow:0 1px 3px rgba(0,0,0,0.08);
+  }
+
+  .row {
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+  }
+  @media (max-width: 820px) {
+    .row { grid-template-columns: 1fr; }
+  }
+
+  .danger {
+    background:#ff4d4f;
+    color:white;
+    border:none;
+    padding:0.4rem 0.85rem;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:700;
+  }
+  .muted { color:#666; font-size:0.95rem; }
+
+  .smallBtn {
+    padding:0.7rem 1rem;
+    border-radius:10px;
+    border:1px solid #ddd;
+    background:#fff;
+    cursor:pointer;
+    font-weight:700;
+  }
+
+  .publishBox {
+    margin: 1.2rem 2rem 0 2rem;
+    background: #fff;
+  }
+  .publishBox .card { margin-bottom:0; }
+  .publishActions { display:flex; gap:0.6rem; flex-wrap:wrap; margin-top:0.6rem; }
 </style>
 </head>
 <body>
 
-<!-- 🔐 LOGIN SCREEN -->
-<div id="loginScreen">
-    <h2>🔐 Admin Login</h2>
-    <input type="password" id="adminPassword" placeholder="Enter password">
-    <button onclick="login()">Login</button>
-    <p id="loginError" style="color:red;"></p>
+<!-- 🔐 LOCK SCREEN (cosmetic) -->
+<div id="lockScreen">
+  <h2>Admin Panel</h2>
+  <p>This page can be hosted publicly on GitHub Pages. Real protection comes from requiring a GitHub token to publish changes.</p>
+  <input type="password" id="unlockKey" placeholder="Enter your unlock phrase (stored only in this browser session)" />
+  <button class="primaryBtn" onclick="unlock()">Unlock</button>
+  <p id="unlockError" style="color:#c00; margin-top:0.7rem;"></p>
+  <p class="hint">Tip: You can set any phrase you want. It’s only to prevent accidental access on your own device.</p>
 </div>
 
-<!-- 🛠 ADMIN PANEL -->
-<div id="adminPanel" style="display:none;">
-    <div class="container">
-        <div class="header">
-            <h1>📝 Website Admin Panel</h1>
-            <button class="save-btn" onclick="saveAllData()">💾 Save All Changes</button>
-        </div>
+<div class="container" id="adminApp">
+  <div class="header">
+    <h1>📝 Website Admin Panel</h1>
+    <button class="save-btn" onclick="downloadJson()">⬇️ Download JSON</button>
+  </div>
 
-        <div class="alert" id="saveAlert">✅ Changes saved!</div>
+  <div class="alert" id="saveAlert">✅ Done!</div>
 
-        <div class="tabs">
-            <button class="tab active" onclick="switchTab('profile', event)">Profile</button>
-            <button class="tab" onclick="switchTab('experience', event)">Experience</button>
-            <button class="tab" onclick="switchTab('education', event)">Education</button>
-            <button class="tab" onclick="switchTab('skills', event)">Skills</button>
-            <button class="tab" onclick="switchTab('contact', event)">Contact</button>
-            <button class="tab" onclick="switchTab('blogs', event)">Blogs</button>
-        </div>
+  <!-- Publish box -->
+  <div class="publishBox">
+    <div class="card">
+      <div class="section-title" style="margin-bottom:0.6rem;">Publish to GitHub (updates public site)</div>
+      <p class="muted">
+        This commits <code>data/site.json</code> to your repo using the GitHub API.
+        You must use a Personal Access Token with <b>Contents: Read & Write</b>.
+      </p>
 
-        <div class="content">
-            <!-- PROFILE -->
-            <div id="profile" class="tab-content active">
-                <h2 class="section-title">Profile</h2>
-                <input id="profileName" placeholder="Name">
-                <input id="profileProfession" placeholder="Profession">
-                <textarea id="profileAbout" placeholder="About"></textarea>
-            </div>
+      <div class="row">
+        <input id="ghOwner" placeholder="GitHub owner (e.g., ahmedlemine)" />
+        <input id="ghRepo" placeholder="Repo name (e.g., ahmedlemine.github.io)" />
+      </div>
+      <div class="row">
+        <input id="ghBranch" placeholder="Branch (usually main)" value="main" />
+        <input id="ghToken" placeholder="GitHub token (paste each session)" type="password" />
+      </div>
 
-            <!-- EXPERIENCE -->
-            <div id="experience" class="tab-content">
-                <h2 class="section-title">Experience</h2>
-                <div id="experienceList"></div>
-                <button onclick="addExperience()">➕ Add Experience</button>
-            </div>
+      <div class="publishActions">
+        <button class="save-btn" onclick="publishToGitHub()">🚀 Publish</button>
+        <button class="smallBtn" onclick="loadFromJson()">↻ Reload from site.json</button>
+      </div>
 
-            <!-- EDUCATION -->
-            <div id="education" class="tab-content">
-                <h2 class="section-title">Education</h2>
-                <div id="educationList"></div>
-                <button onclick="addEducation()">➕ Add Education</button>
-            </div>
-
-            <!-- SKILLS -->
-            <div id="skills" class="tab-content">
-                <textarea id="skillsInput" placeholder="Add skills separated by commas"></textarea>
-            </div>
-
-            <!-- CONTACT -->
-            <div id="contact" class="tab-content">
-                <input id="contactEmail" placeholder="Email">
-                <input id="contactGithub" placeholder="GitHub">
-                <input id="contactLinkedin" placeholder="LinkedIn URL">
-                <input id="contactTwitter" placeholder="Twitter/X">
-            </div>
-
-            <!-- BLOGS -->
-            <div id="blogs" class="tab-content">
-                <h2 class="section-title">Blogs</h2>
-                <div id="blogsList"></div>
-                <button onclick="addBlog()">➕ Add Blog</button>
-            </div>
-        </div>
+      <p class="hint">Security note: never commit your token into the repo. This tool does not store it.</p>
     </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('profile', event)">Profile</button>
+    <button class="tab" onclick="switchTab('experience', event)">Experience</button>
+    <button class="tab" onclick="switchTab('education', event)">Education</button>
+    <button class="tab" onclick="switchTab('skills', event)">Skills</button>
+    <button class="tab" onclick="switchTab('contact', event)">Contact</button>
+    <button class="tab" onclick="switchTab('blog', event)">Blog</button>
+    <button class="tab" onclick="switchTab('books', event)">Books</button>
+  </div>
+
+  <div class="content">
+    <!-- PROFILE -->
+    <div id="profile" class="tab-content active">
+      <h2 class="section-title">Profile</h2>
+      <input id="profileName" placeholder="Name" />
+      <input id="profileProfession" placeholder="Profession / headline" />
+      <textarea id="profileAbout" placeholder="About (short intro)"></textarea>
+      <input id="profileResumeUrl" placeholder="Resume URL (optional) e.g., ./assets/resume.pdf" />
+      <p class="muted">If you upload a PDF (e.g., <code>assets/resume.pdf</code>), put <code>./assets/resume.pdf</code> here.</p>
+    </div>
+
+    <!-- EXPERIENCE -->
+    <div id="experience" class="tab-content">
+      <h2 class="section-title">Experience</h2>
+      <div id="experienceList"></div>
+      <button class="smallBtn" onclick="addExperience()">➕ Add Experience</button>
+    </div>
+
+    <!-- EDUCATION -->
+    <div id="education" class="tab-content">
+      <h2 class="section-title">Education</h2>
+      <div id="educationList"></div>
+      <button class="smallBtn" onclick="addEducation()">➕ Add Education</button>
+    </div>
+
+    <!-- SKILLS -->
+    <div id="skills" class="tab-content">
+      <h2 class="section-title">Skills</h2>
+      <textarea id="skillsInput" placeholder="Add skills separated by commas"></textarea>
+    </div>
+
+    <!-- CONTACT -->
+    <div id="contact" class="tab-content">
+      <h2 class="section-title">Contact</h2>
+      <input id="contactEmail" placeholder="Email" />
+      <input id="contactGithub" placeholder="GitHub profile URL" />
+      <input id="contactLinkedin" placeholder="LinkedIn profile URL" />
+      <input id="contactTwitter" placeholder="Twitter/X username (without @)" />
+    </div>
+
+    <!-- BLOG -->
+    <div id="blog" class="tab-content">
+      <h2 class="section-title">Blog</h2>
+      <div id="blogList"></div>
+      <button class="smallBtn" onclick="addBlog()">➕ Add Post</button>
+    </div>
+
+    <!-- BOOKS -->
+    <div id="books" class="tab-content">
+      <h2 class="section-title">Books</h2>
+      <div id="booksList"></div>
+      <button class="smallBtn" onclick="addBook()">➕ Add Book</button>
+    </div>
+  </div>
 </div>
 
 <script>
-/* 🔐 LOGIN */
-const PASSWORD = "Ahmed20012001.?";
-function login() {
-    const input = document.getElementById("adminPassword").value;
-    if(input === PASSWORD) {
-        sessionStorage.setItem("adminLoggedIn", "true");
-        showAdmin();
-    } else {
-        document.getElementById("loginError").innerText = "Wrong password";
+  const DATA_PATH = "data/site.json";
+  const SESSION_UNLOCK_KEY = "adminUnlocked";
+  const DEMO_UNLOCK_PHRASE = "change-me"; // you can change this locally; it is NOT security.
+
+  let data = {};
+
+  function unlock() {
+    const v = document.getElementById("unlockKey").value;
+    if (!v) {
+      document.getElementById("unlockError").textContent = "Enter a phrase.";
+      return;
     }
-}
-function showAdmin() {
-    document.getElementById("loginScreen").style.display = "none";
-    document.getElementById("adminPanel").style.display = "block";
-}
-if(sessionStorage.getItem("adminLoggedIn") === "true") showAdmin();
+    // Cosmetic lock only. Store in session.
+    sessionStorage.setItem(SESSION_UNLOCK_KEY, "true");
+    document.getElementById("lockScreen").style.display = "none";
+    document.getElementById("adminApp").style.display = "block";
+    loadFromJson();
+  }
 
-/* 🛠 DATA INIT */
-let data = JSON.parse(localStorage.getItem("websiteData")) || {};
-data.profile = data.profile || {};
-data.skills = data.skills || [];
-data.contact = data.contact || {};
-data.experience = data.experience || [];
-data.education = data.education || [];
-data.blogs = data.blogs || [];
+  if (sessionStorage.getItem(SESSION_UNLOCK_KEY) === "true") {
+    document.getElementById("lockScreen").style.display = "none";
+    document.getElementById("adminApp").style.display = "block";
+    loadFromJson();
+  }
 
-/* RENDER FUNCTIONS */
-// EXPERIENCE
-function renderExperience() {
+  function normalizeData() {
+    data = data || {};
+    data.profile = data.profile || {};
+    data.profile.name = data.profile.name || "";
+    data.profile.profession = data.profile.profession || "";
+    data.profile.about = data.profile.about || "";
+    data.profile.resumeUrl = data.profile.resumeUrl || "";
+
+    data.experience = Array.isArray(data.experience) ? data.experience : [];
+    data.education = Array.isArray(data.education) ? data.education : [];
+    data.skills = Array.isArray(data.skills) ? data.skills : [];
+    data.books = Array.isArray(data.books) ? data.books : [];
+    data.blog = Array.isArray(data.blog) ? data.blog : [];
+
+    data.contact = data.contact || {};
+    data.contact.email = data.contact.email || "";
+    data.contact.github = data.contact.github || "";
+    data.contact.linkedin = data.contact.linkedin || "";
+    data.contact.twitter = data.contact.twitter || "";
+  }
+
+  async function loadFromJson() {
+    try {
+      const res = await fetch("./data/site.json", { cache: "no-store" });
+      if (!res.ok) throw new Error("Could not load data/site.json");
+      data = await res.json();
+      normalizeData();
+      fillFormFromData();
+      renderAll();
+      toast("Loaded.");
+    } catch (e) {
+      console.error(e);
+      data = {};
+      normalizeData();
+      fillFormFromData();
+      renderAll();
+      toast("Could not load site.json. Using empty data.");
+    }
+  }
+
+  function fillFormFromData() {
+    document.getElementById("profileName").value = data.profile.name;
+    document.getElementById("profileProfession").value = data.profile.profession;
+    document.getElementById("profileAbout").value = data.profile.about;
+    document.getElementById("profileResumeUrl").value = data.profile.resumeUrl || "";
+
+    document.getElementById("skillsInput").value = (data.skills || []).join(", ");
+
+    document.getElementById("contactEmail").value = data.contact.email;
+    document.getElementById("contactGithub").value = data.contact.github;
+    document.getElementById("contactLinkedin").value = data.contact.linkedin;
+    document.getElementById("contactTwitter").value = data.contact.twitter;
+  }
+
+  function updateDataFromForm() {
+    data.profile.name = document.getElementById("profileName").value.trim();
+    data.profile.profession = document.getElementById("profileProfession").value.trim();
+    data.profile.about = document.getElementById("profileAbout").value.trim();
+    data.profile.resumeUrl = document.getElementById("profileResumeUrl").value.trim();
+
+    data.skills = document.getElementById("skillsInput").value
+      .split(",").map(s => s.trim()).filter(Boolean);
+
+    data.contact.email = document.getElementById("contactEmail").value.trim();
+    data.contact.github = document.getElementById("contactGithub").value.trim();
+    data.contact.linkedin = document.getElementById("contactLinkedin").value.trim();
+    data.contact.twitter = document.getElementById("contactTwitter").value.trim();
+  }
+
+  function renderAll() {
+    renderExperience();
+    renderEducation();
+    renderBlog();
+    renderBooks();
+  }
+
+  // EXPERIENCE
+  function renderExperience() {
     const container = document.getElementById("experienceList");
     container.innerHTML = "";
     data.experience.forEach((exp, idx) => {
-        const div = document.createElement("div");
-        div.classList.add("card");
-        div.innerHTML = `
-            <input placeholder="Position" value="${exp.position}" onchange="data.experience[${idx}].position=this.value">
-            <input placeholder="Company" value="${exp.company}" onchange="data.experience[${idx}].company=this.value">
-            <input placeholder="Years" value="${exp.years}" onchange="data.experience[${idx}].years=this.value">
-            <textarea placeholder="Description" onchange="data.experience[${idx}].description=this.value">${exp.description || ''}</textarea>
-            <button onclick="removeExperience(${idx})">🗑 Remove</button>
-        `;
-        container.appendChild(div);
+      const div = document.createElement("div");
+      div.classList.add("card");
+      div.innerHTML = `
+        <div class="row">
+          <input placeholder="Title" value="${escapeAttr(exp.title)}" oninput="data.experience[${idx}].title=this.value">
+          <input placeholder="Company" value="${escapeAttr(exp.company)}" oninput="data.experience[${idx}].company=this.value">
+        </div>
+        <input placeholder="Duration (e.g., 2024–2025)" value="${escapeAttr(exp.duration)}" oninput="data.experience[${idx}].duration=this.value">
+        <textarea placeholder="Description" oninput="data.experience[${idx}].description=this.value">${escapeText(exp.description)}</textarea>
+        <button class="danger" onclick="removeExperience(${idx})">🗑 Remove</button>
+      `;
+      container.appendChild(div);
     });
-}
-function addExperience(){ data.experience.push({position:"", company:"", years:"", description:""}); renderExperience(); }
-function removeExperience(idx){ data.experience.splice(idx,1); renderExperience(); }
+  }
+  function addExperience() {
+    data.experience.push({ title:"", company:"", duration:"", description:"" });
+    renderExperience();
+  }
+  function removeExperience(idx) {
+    data.experience.splice(idx, 1);
+    renderExperience();
+  }
 
-// EDUCATION
-function renderEducation() {
+  // EDUCATION
+  function renderEducation() {
     const container = document.getElementById("educationList");
     container.innerHTML = "";
     data.education.forEach((edu, idx) => {
-        const div = document.createElement("div");
-        div.classList.add("card");
-        div.innerHTML = `
-            <input placeholder="Degree / Program" value="${edu.degree}" onchange="data.education[${idx}].degree=this.value">
-            <input placeholder="School / University" value="${edu.school}" onchange="data.education[${idx}].school=this.value">
-            <input placeholder="Years" value="${edu.years}" onchange="data.education[${idx}].years=this.value">
-            <textarea placeholder="Description" onchange="data.education[${idx}].description=this.value">${edu.description || ''}</textarea>
-            <button onclick="removeEducation(${idx})">🗑 Remove</button>
-        `;
-        container.appendChild(div);
+      const div = document.createElement("div");
+      div.classList.add("card");
+      div.innerHTML = `
+        <div class="row">
+          <input placeholder="Degree / Program" value="${escapeAttr(edu.degree)}" oninput="data.education[${idx}].degree=this.value">
+          <input placeholder="Institution" value="${escapeAttr(edu.institution)}" oninput="data.education[${idx}].institution=this.value">
+        </div>
+        <input placeholder="Duration (e.g., 2023–2027)" value="${escapeAttr(edu.duration)}" oninput="data.education[${idx}].duration=this.value">
+        <textarea placeholder="Description" oninput="data.education[${idx}].description=this.value">${escapeText(edu.description)}</textarea>
+        <button class="danger" onclick="removeEducation(${idx})">🗑 Remove</button>
+      `;
+      container.appendChild(div);
     });
-}
-function addEducation(){ data.education.push({degree:"", school:"", years:"", description:""}); renderEducation(); }
-function removeEducation(idx){ data.education.splice(idx,1); renderEducation(); }
+  }
+  function addEducation() {
+    data.education.push({ degree:"", institution:"", duration:"", description:"" });
+    renderEducation();
+  }
+  function removeEducation(idx) {
+    data.education.splice(idx, 1);
+    renderEducation();
+  }
 
-// BLOGS
-function renderBlogs() {
-    const container = document.getElementById("blogsList");
+  // BLOG
+  function renderBlog() {
+    const container = document.getElementById("blogList");
     container.innerHTML = "";
-    data.blogs.forEach((blog, idx) => {
-        const div = document.createElement("div");
-        div.classList.add("card");
-        div.innerHTML = `
-            <input placeholder="Title" value="${blog.title}" onchange="data.blogs[${idx}].title=this.value">
-            <input placeholder="Date (YYYY-MM-DD)" value="${blog.date}" onchange="data.blogs[${idx}].date=this.value">
-            <textarea placeholder="Content" onchange="data.blogs[${idx}].content=this.value">${blog.content || ''}</textarea>
-            <button onclick="removeBlog(${idx})">🗑 Remove</button>
-        `;
-        container.appendChild(div);
+    data.blog.forEach((post, idx) => {
+      const div = document.createElement("div");
+      div.classList.add("card");
+      div.innerHTML = `
+        <input placeholder="Title" value="${escapeAttr(post.title)}" oninput="data.blog[${idx}].title=this.value">
+        <input placeholder="Date (YYYY-MM-DD)" value="${escapeAttr(post.date)}" oninput="data.blog[${idx}].date=this.value">
+        <textarea placeholder="Content" oninput="data.blog[${idx}].content=this.value">${escapeText(post.content)}</textarea>
+        <button class="danger" onclick="removeBlog(${idx})">🗑 Remove</button>
+      `;
+      container.appendChild(div);
     });
-}
-function addBlog() { data.blogs.push({title:"", date:"", content:""}); renderBlogs(); }
-function removeBlog(idx) { data.blogs.splice(idx,1); renderBlogs(); }
+  }
+  function addBlog() {
+    data.blog.push({ title:"", date:"", content:"" });
+    renderBlog();
+  }
+  function removeBlog(idx) {
+    data.blog.splice(idx, 1);
+    renderBlog();
+  }
 
-// INITIAL RENDER
-renderExperience();
-renderEducation();
-renderBlogs();
+  // BOOKS
+  function renderBooks() {
+    const container = document.getElementById("booksList");
+    container.innerHTML = "";
+    data.books.forEach((b, idx) => {
+      const div = document.createElement("div");
+      div.classList.add("card");
+      div.innerHTML = `
+        <div class="row">
+          <input placeholder="Title" value="${escapeAttr(b.title)}" oninput="data.books[${idx}].title=this.value">
+          <input placeholder="Author" value="${escapeAttr(b.author)}" oninput="data.books[${idx}].author=this.value">
+        </div>
+        <textarea placeholder="Review / Why you recommend it" oninput="data.books[${idx}].review=this.value">${escapeText(b.review)}</textarea>
+        <button class="danger" onclick="removeBook(${idx})">🗑 Remove</button>
+      `;
+      container.appendChild(div);
+    });
+  }
+  function addBook() {
+    data.books.push({ title:"", author:"", review:"" });
+    renderBooks();
+  }
+  function removeBook(idx) {
+    data.books.splice(idx, 1);
+    renderBooks();
+  }
 
-/* SAVE DATA */
-function saveAllData(){
-    data.profile.name = document.getElementById("profileName").value;
-    data.profile.profession = document.getElementById("profileProfession").value;
-    data.profile.about = document.getElementById("profileAbout").value;
-    data.skills = document.getElementById("skillsInput").value.split(",").map(s => s.trim()).filter(s => s);
-    data.contact.email = document.getElementById("contactEmail").value;
-    data.contact.github = document.getElementById("contactGithub").value;
-    data.contact.linkedin = document.getElementById("contactLinkedin").value;
-    data.contact.twitter = document.getElementById("contactTwitter").value;
+  // Download JSON (manual commit workflow)
+  function downloadJson() {
+    updateDataFromForm();
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "site.json";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    toast("Downloaded site.json. Replace data/site.json and commit.");
+  }
 
-    localStorage.setItem("websiteData", JSON.stringify(data));
-    document.getElementById("saveAlert").classList.add("active");
-    setTimeout(()=>document.getElementById("saveAlert").classList.remove("active"),2000);
-}
+  // Publish to GitHub (best workflow)
+  async function publishToGitHub() {
+    updateDataFromForm();
 
-/* TAB SWITCH */
-function switchTab(id,e){
-    document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
-    document.querySelectorAll(".tab-content").forEach(c=>c.classList.remove("active"));
+    const owner = document.getElementById("ghOwner").value.trim();
+    const repo = document.getElementById("ghRepo").value.trim();
+    const branch = document.getElementById("ghBranch").value.trim() || "main";
+    const token = document.getElementById("ghToken").value.trim();
+
+    if (!owner || !repo || !token) {
+      alert("Fill GitHub owner, repo, and token first.");
+      return;
+    }
+
+    const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${DATA_PATH}`;
+
+    // 1) Read current sha (if exists)
+    let sha = null;
+    const getRes = await fetch(`${apiUrl}?ref=${encodeURIComponent(branch)}`, {
+      headers: { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" }
+    });
+
+    if (getRes.ok) {
+      const existing = await getRes.json();
+      sha = existing.sha;
+    } else if (getRes.status !== 404) {
+      const msg = await getRes.text();
+      console.error(msg);
+      alert("Failed to read existing site.json from GitHub. Check repo/branch/token.");
+      return;
+    }
+
+    // 2) PUT new content
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+    const body = {
+      message: "Update site data",
+      content,
+      branch
+    };
+    if (sha) body.sha = sha;
+
+    const putRes = await fetch(apiUrl, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/vnd.github+json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(body)
+    });
+
+    if (!putRes.ok) {
+      const msg = await putRes.text();
+      console.error(msg);
+      alert("Publish failed. Your token likely needs Contents: Read/Write.");
+      return;
+    }
+
+    toast("Published! GitHub Pages will update shortly.");
+  }
+
+  // TAB SWITCH
+  function switchTab(id, e) {
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
     e.target.classList.add("active");
     document.getElementById(id).classList.add("active");
-}
+  }
+
+  function toast(msg) {
+    const el = document.getElementById("saveAlert");
+    el.textContent = "✅ " + msg;
+    el.classList.add("active");
+    setTimeout(() => el.classList.remove("active"), 2200);
+  }
+
+  // escape helpers for safe attribute/text insertion in admin
+  function escapeAttr(v) {
+    return String(v ?? "").replaceAll('"', "&quot;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+  }
+  function escapeText(v) {
+    return String(v ?? "").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+  }
 </script>
 </body>
 </html>
